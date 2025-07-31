@@ -1,4 +1,4 @@
 # Rotating Cube
 
 This is a simple rotating cube that I created to test my knowledge of web
-assembly, assembly script, and shaders.
+assembly, Rust, and shaders.
