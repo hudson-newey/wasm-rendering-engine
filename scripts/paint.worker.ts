@@ -30,7 +30,6 @@ class CubePainter {
   private paintNext(currentData: Uint8Array) {
     const newData = next_frame(currentData, this.width, this.height);
 
-    const ctxData = this.ctx.createImageData(this.width, this.height);
     const imageData = new ImageData(
       new Uint8ClampedArray(newData),
       this.width,
