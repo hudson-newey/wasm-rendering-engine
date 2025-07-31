@@ -1,0 +1,15 @@
+body {
+    position: relative;
+
+    min-height: 100dvb;
+
+    margin: 0;
+}
+
+#output-canvas {
+    position: absolute;
+
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
