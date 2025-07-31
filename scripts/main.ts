@@ -1,9 +1,11 @@
-import initWasm, { add } from "../build/wasm";
 import PaintWorker from "./paint.worker?worker";
 
-await initWasm();
-
 const outputCanvas = document.getElementById("output-canvas");
-const painter = new PaintWorker();
+if (!(outputCanvas instanceof HTMLCanvasElement)) {
+  throw new Error("Output canvas must be a HTMLCanvasElement");
+}
 
-console.log(add(1, 4));
+const offscreenCanvas = outputCanvas.transferControlToOffscreen();
+
+const painter = new PaintWorker();
+painter.postMessage(offscreenCanvas, [offscreenCanvas]);
