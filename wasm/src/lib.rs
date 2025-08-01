@@ -1,19 +1,23 @@
 use wasm_bindgen::prelude::*;
 
-#[derive(Clone)]
-struct RgbaColor {
-    r: u8,
-    g: u8,
-    b: u8,
-    a: u8,
-}
+mod objects;
+mod rendering;
 
 #[wasm_bindgen]
-pub fn next_frame(current_frame: Vec<u8>, width: u32, height: u32) -> Vec<u8> {
-    let background: Vec<u8> = for_each_pixel(
-        current_frame,
+pub fn next_frame(
+    current_frame: Vec<rendering::image::RawValue>,
+    width: rendering::pixel::PixelOffset,
+    height: rendering::pixel::PixelOffset,
+) -> Vec<rendering::image::RawValue> {
+    let image_data = rendering::image::ImageData {
+        data: current_frame,
+        width,
+        height,
+    };
+
+    let canvas = image_data.for_each_pixel(
         |_| true,
-        |_| RgbaColor {
+        |_| rendering::colors::RgbaColor {
             r: 0,
             g: 0,
             b: 0,
@@ -28,79 +32,24 @@ pub fn next_frame(current_frame: Vec<u8>, width: u32, height: u32) -> Vec<u8> {
     let cube_left: u32 = midpoint_left - (cube_size / 2);
     let cube_top: u32 = midpoint_top - (cube_size / 2);
 
-    let square: Vec<u8> = draw_surface(
-        background,
-        RgbaColor {
-            r: 20,
-            g: 10,
-            b: 80,
+    let cube = objects::cube::Cube {
+        x: cube_left,
+        y: cube_top,
+        z: 0,
+
+        width: cube_size,
+        height: cube_size,
+        depth: cube_size,
+
+        color: rendering::colors::RgbaColor {
+            r: 30,
+            g: 20,
+            b: 120,
             a: 255,
         },
-        width,
-        height,
-        cube_left,
-        cube_left + cube_size,
-        cube_top,
-        cube_top + cube_size,
-        0,
-        0,
-    );
+    };
 
-    return square;
-}
+    let cubed_canvas = cube.draw(&canvas);
 
-fn pixel_to_rgba(buffer: &[u8]) -> RgbaColor {
-    RgbaColor {
-        r: buffer[0],
-        g: buffer[1],
-        b: buffer[2],
-        a: buffer[3],
-    }
-}
-
-// A really slow helper to conditionally apply a function to every pixel.
-fn for_each_pixel<When, Action>(data: Vec<u8>, when: When, action: Action) -> Vec<u8>
-where
-    When: Fn(u32) -> bool,
-    Action: Fn(&RgbaColor) -> RgbaColor,
-{
-    let mut result: Vec<u8> = Vec::with_capacity(data.len());
-
-    for (index, pixel) in data.chunks(4).enumerate() {
-        if when(index as u32) {
-            let color: RgbaColor = action(&pixel_to_rgba(pixel));
-
-            result.push(color.r);
-            result.push(color.g);
-            result.push(color.b);
-            result.push(color.a);
-        } else {
-            result.extend_from_slice(pixel);
-        }
-    }
-
-    result
-}
-
-fn draw_surface(
-    data: Vec<u8>,
-    color: RgbaColor,
-    width: u32,
-    height: u32,
-    x0: u32,
-    x1: u32,
-    y0: u32,
-    y1: u32,
-    z0: u32,
-    z1: u32,
-) -> Vec<u8> {
-    let layer_data = for_each_pixel(
-        data,
-        |index| {
-            index > (y0 * width) && index < (y1 * width) && index % width > x0 && index % width < x1
-        },
-        |_| color.clone(),
-    );
-
-    layer_data
+    cubed_canvas.data
 }
