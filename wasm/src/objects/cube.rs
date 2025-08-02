@@ -18,11 +18,11 @@ impl objects::drawable::Drawable for Cube {
         let distance_from_camera = self.pos.z - camera.pos.z;
 
         image.for_each_pixel(
-            |index| {
-                index > (self.pos.y as u32 * image.canvas.width)
-                    && index < ((self.pos.y as u32 + self.height) * image.canvas.width)
-                    && index % image.canvas.width > self.pos.x as u32
-                    && index % image.canvas.width < (self.pos.x as u32 + self.width)
+            |pixel| {
+                pixel.y > self.pos.y as u32
+                    && pixel.y < self.pos.y as u32 + self.height
+                    && pixel.x > self.pos.x as u32
+                    && pixel.x < self.pos.x as u32 + self.width
             },
             |_| self.color.clone(),
         )
