@@ -5,7 +5,7 @@ pub fn new_scene() -> Scene {
         pos: rendering::coordinates::Coordinates{
             x: 0.0,
             y: 0.0,
-            z: 100.0,
+            z: 0.0,
         },
         pitch: 0.0,
         yaw: 0.0,
@@ -16,7 +16,7 @@ pub fn new_scene() -> Scene {
 }
 
 pub struct Scene {
-    pub camera: objects::camera::Camera,
+    camera: objects::camera::Camera,
     objects: Vec<Box<dyn objects::drawable::Drawable>>,
 }
 
@@ -45,6 +45,11 @@ impl Scene {
     pub fn add_object<T: Drawable + 'static>(mut self, object: T) -> Self {
         let boxed_object = Box::new(object);
         self.objects.push(boxed_object);
+        self
+    }
+
+    pub fn move_camera(mut self, pos: rendering::coordinates::Coordinates) -> Self {
+        self.camera.pos = pos;
         self
     }
 }
