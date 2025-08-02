@@ -9,21 +9,28 @@ pub const ZEROED_FACING: Facing = Facing {
     roll: 0.0,
 };
 
+type Pitch = f64;
+type Yaw = f64;
+type Roll = f64;
+
 #[derive(Clone)]
 pub struct Facing {
-    pub pitch: f64,
-    pub yaw: f64,
-    pub roll: f64,
+    pitch: Pitch,
+    yaw: Yaw,
+    roll: Roll,
 }
 
+// Pitch, yaw, and roll are all quantized values and therefore should not
+// be directly set.
+// Using these setters will either limit the value to the maximum, or wrap
+// the value so that it appears nothing happens.
 impl Facing {
-    // Pitch, yaw, and roll are all quantized values and therefore should not
-    // be directly set.
-    // Using these setters will either limit the value to the maximum, or wrap
-    // the value so that it appears nothing happens.
-    //
+    pub fn pitch(&self) -> Pitch {
+        self.pitch
+    }
+
     // Pitch will be limited to facing directly upwards and directly downwards.
-    pub fn set_pitch(&mut self, value: f64) {
+    pub fn set_pitch(&mut self, value: Pitch) {
         if value < -180.0 {
             self.pitch = -180.0;
             return;
@@ -35,12 +42,16 @@ impl Facing {
         self.pitch = value;
     }
 
-    pub fn add_pitch(&mut self, value: f64) {
+    pub fn add_pitch(&mut self, value: Pitch) {
         let current = self.clone().pitch;
         self.set_pitch(current + value);
     }
 
-    pub fn set_yaw(&mut self, value: f64) {
+    pub fn yaw(&self) -> Yaw {
+        self.yaw
+    }
+
+    pub fn set_yaw(&mut self, value: Yaw) {
         // We find the modulo of the value % 360 so that if the camera moves
         // really fast / far past 360, the camera will end up in the expected
         // yaw position.
@@ -55,12 +66,16 @@ impl Facing {
         self.yaw = value;
     }
 
-    pub fn add_yaw(&mut self, value: f64) {
+    pub fn add_yaw(&mut self, value: Yaw) {
         let current = self.clone().yaw;
         self.set_yaw(current + value);
     }
 
-    pub fn set_roll(&mut self, value: f64) {
+    pub fn roll(&self) -> Roll {
+        self.roll
+    }
+
+    pub fn set_roll(&mut self, value: Roll) {
         if value < 0.0 || value > 360.0 {
             self.roll = value % 360.0;
             return;
@@ -69,7 +84,7 @@ impl Facing {
         self.roll = value;
     }
 
-    pub fn add_roll(&mut self, value: f64) {
+    pub fn add_roll(&mut self, value: Roll) {
         let current = self.clone().roll;
         self.set_roll(current + value);
     }
