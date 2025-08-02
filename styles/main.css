@@ -4,6 +4,8 @@ body {
     min-height: 100dvb;
 
     margin: 0;
+
+    background-color: black;
 }
 
 #output-canvas {

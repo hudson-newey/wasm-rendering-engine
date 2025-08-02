@@ -17,10 +17,10 @@ impl Cube {
         image.for_each_pixel(
             // |index| index > (self.y * self.width) && index < ((self.y + self.height) * self.width) && index % self.width < self.x,
             |index| {
-                index > (self.y * image.width)
-                    && index < ((self.y + self.height) * image.width)
-                    && index % image.width > self.x
-                    && index % image.width < (self.x + self.width)
+                index > (self.y * image.canvas.width)
+                    && index < ((self.y + self.height) * image.canvas.width)
+                    && index % image.canvas.width > self.x
+                    && index % image.canvas.width < (self.x + self.width)
             },
             |_| self.color.clone(),
         )

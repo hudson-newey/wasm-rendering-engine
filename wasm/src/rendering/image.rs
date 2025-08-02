@@ -1,4 +1,4 @@
-use crate::rendering::{colors, pixel};
+use crate::rendering::{self, colors, pixel};
 
 // A single pixel value.
 // E.g. A red, green, blue, or alpha value
@@ -6,8 +6,7 @@ pub type RawValue = u8;
 
 pub struct ImageData {
     pub data: Vec<RawValue>,
-    pub width: u32,
-    pub height: u32,
+    pub canvas: rendering::canvas::Canvas,
 }
 
 impl ImageData {
@@ -19,8 +18,8 @@ impl ImageData {
             let color = image_data_to_rgba(pixel);
             let pixel_offset = ((index / 4) as f32).floor() as u32;
 
-            let y = (pixel_offset as f32 / self.width as f32).floor() as u32;
-            let x = (pixel_offset as f32 % self.width as f32).floor() as u32;
+            let y = (pixel_offset as f32 / self.canvas.width as f32).floor() as u32;
+            let x = (pixel_offset as f32 % self.canvas.width as f32).floor() as u32;
 
             let pixel = pixel::Pixel { x, y, color };
 
@@ -57,8 +56,7 @@ impl ImageData {
 
         ImageData {
             data: result,
-            width: self.width,
-            height: self.height,
+            canvas: self.canvas.clone(),
         }
     }
 }

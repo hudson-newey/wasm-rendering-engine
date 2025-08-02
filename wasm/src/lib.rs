@@ -2,6 +2,7 @@ use wasm_bindgen::prelude::*;
 
 mod objects;
 mod rendering;
+mod scenes;
 
 #[wasm_bindgen]
 pub fn next_frame(
@@ -9,10 +10,10 @@ pub fn next_frame(
     width: rendering::pixel::PixelOffset,
     height: rendering::pixel::PixelOffset,
 ) -> Vec<rendering::image::RawValue> {
+    let canvas = rendering::canvas::Canvas { width, height };
     let image_data = rendering::image::ImageData {
         data: current_frame,
-        width,
-        height,
+        canvas,
     };
 
     let canvas = image_data.for_each_pixel(
