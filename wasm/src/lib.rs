@@ -50,7 +50,9 @@ pub fn next_frame(
         },
     };
 
-    let scene = scenes::scene::new_scene(vec![Box::new(cube), Box::new(light)]);
+    let scene = scenes::scene::new_scene()
+        .add_object(cube)
+        .add_object(light);
 
     scene.generate(&canvas).data
 }

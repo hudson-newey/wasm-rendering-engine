@@ -1,6 +1,6 @@
 use crate::{objects::{self, drawable::Drawable}, rendering};
 
-pub fn new_scene(objects: Vec<Box<dyn Drawable>>) -> Scene {
+pub fn new_scene() -> Scene {
     let camera = objects::camera::Camera {
         x: 0,
         y: 300,
@@ -10,12 +10,12 @@ pub fn new_scene(objects: Vec<Box<dyn Drawable>>) -> Scene {
         roll: 0,
     };
 
-   Scene { objects, camera }
+   Scene { objects: vec![], camera }
 }
 
 pub struct Scene {
+    pub camera: objects::camera::Camera,
     objects: Vec<Box<dyn objects::drawable::Drawable>>,
-    camera: objects::camera::Camera,
 }
 
 impl Scene {
@@ -38,5 +38,11 @@ impl Scene {
         }
 
         image
+    }
+
+    pub fn add_object<T: Drawable + 'static>(mut self, object: T) -> Self {
+        let boxed_object = Box::new(object);
+        self.objects.push(boxed_object);
+        self
     }
 }
