@@ -29,7 +29,7 @@ impl Scene {
         let mut image = rendering::image::from_canvas(canvas.clone());
 
         // before rendering anything, we want to black out the entire canvas
-        image = image.for_each_pixel(
+        image.for_each_pixel(
             |_| true,
             |_| rendering::colors::RgbaColor {
                 r: 0,
@@ -40,7 +40,7 @@ impl Scene {
         );
 
         for object in self.objects {
-            image = object.draw(&image, &self.camera);
+            object.draw(&mut image, &self.camera);
         }
 
         image

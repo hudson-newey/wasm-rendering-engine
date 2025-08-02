@@ -1,3 +1,5 @@
+use crate::rendering;
+
 type IntensityRed = u8;
 type IntensityGreen = u8;
 type IntensityBlue = u8;
@@ -9,4 +11,10 @@ pub struct RgbaColor {
     pub g: IntensityGreen,
     pub b: IntensityBlue,
     pub a: IntensityAlpha,
+}
+
+impl RgbaColor {
+    pub fn to_image_data(&self) -> [rendering::image::RawValue; 4] {
+        [self.r, self.g, self.b, self.a]
+    }
 }

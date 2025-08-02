@@ -11,9 +11,9 @@ pub const ZEROED_FACING: Facing = Facing {
 
 #[derive(Clone)]
 pub struct Facing {
-    pitch: f64,
-    yaw: f64,
-    roll: f64,
+    pub pitch: f64,
+    pub yaw: f64,
+    pub roll: f64,
 }
 
 impl Facing {

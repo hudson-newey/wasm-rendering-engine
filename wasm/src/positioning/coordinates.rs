@@ -1,4 +1,5 @@
 #[derive(Clone)]
+#[derive(Copy)]
 pub struct Coordinates {
     pub x: f64,
     pub y: f64,

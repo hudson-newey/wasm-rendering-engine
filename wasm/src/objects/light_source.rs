@@ -14,9 +14,9 @@ pub struct LightSource {
 impl objects::drawable::Drawable for LightSource {
     fn draw(
         self: &Self,
-        image: &rendering::image::ImageData,
+        image: &mut rendering::image::ImageData,
         camera: &objects::camera::Camera,
-    ) -> rendering::image::ImageData {
-        image.for_each_pixel(|_| false, |_| self.color.clone())
+    ) {
+        image.for_each_pixel(|_| false, |_| self.color.clone());
     }
 }

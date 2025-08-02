@@ -46,12 +46,20 @@ pub fn generate_frame(
         height: cube_size,
         depth: cube_size,
 
-        color: rendering::colors::RgbaColor {
+        bg_color: rendering::colors::RgbaColor {
             r: 30,
             g: 20,
             b: 120,
             a: 255,
         },
+
+        line_color: rendering::colors::RgbaColor {
+            r: 120,
+            g: 20,
+            b: 30,
+            a: 255,
+        },
+        line_width: 2,
     };
 
     let light = objects::light_source::LightSource {

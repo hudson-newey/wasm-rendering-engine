@@ -6,9 +6,13 @@ pub type RawValue = u8;
 
 pub fn from_canvas(canvas: rendering::canvas::Canvas) -> ImageData {
     let data: Vec<RawValue> = (0..(canvas.width * canvas.height * 4)).map(|_| 0).collect();
-    ImageData { data, canvas: canvas.clone() }
+    ImageData {
+        data,
+        canvas: canvas.clone(),
+    }
 }
 
+#[derive(Clone)]
 pub struct ImageData {
     pub data: Vec<RawValue>,
     pub canvas: rendering::canvas::Canvas,
@@ -16,14 +20,10 @@ pub struct ImageData {
 
 impl ImageData {
     // A really slow helper to conditionally apply a function to every pixel.
-    pub fn for_each_pixel<When, Action>(
-        &self,
-        when: When,
-        action: Action,
-    ) -> ImageData
+    pub fn for_each_pixel<When, Action>(&mut self, when: When, action: Action)
     where
         When: Fn(&rendering::pixel::Pixel) -> bool,
-        Action: Fn(&colors::RgbaColor) -> colors::RgbaColor,
+        Action: Fn(&rendering::pixel::Pixel) -> colors::RgbaColor,
     {
         let mut result: Vec<RawValue> = Vec::with_capacity(self.data.len());
 
@@ -31,25 +31,23 @@ impl ImageData {
             let pixel = self.data_index_to_pixel(index, raw_data);
 
             if when(&pixel) {
-                let color = action(&pixel.color);
-
-                result.push(color.r);
-                result.push(color.g);
-                result.push(color.b);
-                result.push(color.a);
+                let color = action(&pixel);
+                result.extend_from_slice(&color.to_image_data());
             } else {
                 result.extend_from_slice(raw_data);
             }
         }
 
-        ImageData {
-            data: result,
-            canvas: self.canvas.clone(),
-        }
+        self.data = result;
+    }
+
+    pub fn set_pixel(&mut self, x: u32, y: u32, color: colors::RgbaColor) {
+        let index = ((y * self.canvas.width) + x) as usize;
+        self.data[index..index+3].copy_from_slice(&color.to_image_data());
     }
 
     fn data_index_to_pixel(&self, offset: usize, raw_data: &[u8]) -> rendering::pixel::Pixel {
-        let x= offset as u32 % self.canvas.width;
+        let x = offset as u32 % self.canvas.width;
         let y = offset as u32 / self.canvas.width;
         let color = image_data_to_rgba(raw_data);
 
