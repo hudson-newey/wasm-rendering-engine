@@ -1,4 +1,4 @@
-use crate::rendering::{colors, image::ImageData, pixel};
+use crate::{objects, rendering::{colors, image::ImageData, pixel}};
 
 pub struct Cube {
     pub x: pixel::PixelOffset,
@@ -12,8 +12,8 @@ pub struct Cube {
     pub color: colors::RgbaColor,
 }
 
-impl Cube {
-    pub fn draw(&self, image: &ImageData) -> ImageData {
+impl objects::drawable::Drawable for Cube {
+    fn draw(&self, image: &ImageData, camera: &objects::camera::Camera) -> ImageData {
         image.for_each_pixel(
             // |index| index > (self.y * self.width) && index < ((self.y + self.height) * self.width) && index % self.width < self.x,
             |index| {

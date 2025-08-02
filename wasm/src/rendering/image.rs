@@ -4,31 +4,17 @@ use crate::rendering::{self, colors, pixel};
 // E.g. A red, green, blue, or alpha value
 pub type RawValue = u8;
 
+pub fn from_canvas(canvas: rendering::canvas::Canvas) -> ImageData {
+    let data: Vec<RawValue> = (0..(canvas.width * canvas.height * 4)).map(|_| 0).collect();
+    ImageData { data, canvas: canvas.clone() }
+}
+
 pub struct ImageData {
     pub data: Vec<RawValue>,
     pub canvas: rendering::canvas::Canvas,
 }
 
 impl ImageData {
-    pub fn to_pixels(&self) -> Vec<pixel::Pixel> {
-        let channels = 4;
-        let mut result: Vec<pixel::Pixel> = Vec::with_capacity(self.data.len() / channels);
-
-        for (index, pixel) in self.data.chunks(channels).enumerate() {
-            let color = image_data_to_rgba(pixel);
-            let pixel_offset = ((index / 4) as f32).floor() as u32;
-
-            let y = (pixel_offset as f32 / self.canvas.width as f32).floor() as u32;
-            let x = (pixel_offset as f32 % self.canvas.width as f32).floor() as u32;
-
-            let pixel = pixel::Pixel { x, y, color };
-
-            result.push(pixel);
-        }
-
-        result
-    }
-
     // A really slow helper to conditionally apply a function to every pixel.
     pub fn for_each_pixel<When, Action>(
         &self,

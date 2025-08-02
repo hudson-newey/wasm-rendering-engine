@@ -24,11 +24,11 @@ class CubePainter {
 
     const initialBuffer = new Uint8Array(bufferSize);
 
-    this.paintNext(initialBuffer);
+    this.paintNext();
   }
 
-  private paintNext(currentData: Uint8Array) {
-    const newData = next_frame(currentData, this.width, this.height);
+  private paintNext() {
+    const newData = next_frame(this.width, this.height);
 
     const imageData = new ImageData(
       new Uint8ClampedArray(newData),
@@ -40,7 +40,7 @@ class CubePainter {
     // Only request the next frame after the current frame has completed.
     // This means that if the computer is slow, the animation will prefer
     // to run slowly rather than drop frames.
-    requestAnimationFrame(() => this.paintNext(newData));
+    // requestAnimationFrame(() => this.paintNext());
   }
 }
 

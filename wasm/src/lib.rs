@@ -6,25 +6,10 @@ mod scenes;
 
 #[wasm_bindgen]
 pub fn next_frame(
-    current_frame: Vec<rendering::image::RawValue>,
     width: rendering::pixel::PixelOffset,
     height: rendering::pixel::PixelOffset,
 ) -> Vec<rendering::image::RawValue> {
     let canvas = rendering::canvas::Canvas { width, height };
-    let image_data = rendering::image::ImageData {
-        data: current_frame,
-        canvas,
-    };
-
-    let canvas = image_data.for_each_pixel(
-        |_| true,
-        |_| rendering::colors::RgbaColor {
-            r: 0,
-            g: 0,
-            b: 0,
-            a: 255,
-        },
-    );
 
     let cube_size: u32 = 600;
     let midpoint_left: u32 = width / 2;
@@ -50,7 +35,22 @@ pub fn next_frame(
         },
     };
 
-    let cubed_canvas = cube.draw(&canvas);
+    let light = objects::light_source::LightSource {
+        x: 300,
+        y: 150,
+        z: 0,
 
-    cubed_canvas.data
+        intensity: 400,
+
+        color: rendering::colors::RgbaColor {
+            r: 255,
+            g: 255,
+            b: 255,
+            a: 100,
+        },
+    };
+
+    let scene = scenes::scene::new_scene(vec![Box::new(cube), Box::new(light)]);
+
+    scene.generate(&canvas).data
 }
