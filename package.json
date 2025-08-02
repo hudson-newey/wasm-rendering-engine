@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "watch:wasm": "deno --allow-all wasm-watcher.ts",
     "build:wasm": "wasm-pack build ./wasm/ --target web -d ../build/"
   },
   "devDependencies": {
