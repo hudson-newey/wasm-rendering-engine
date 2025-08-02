@@ -47,19 +47,12 @@ pub fn generate_frame(
 
     let light = objects::light_source::LightSource {
         pos: positioning::coordinates::Coordinates {
-            x: 300.0,
-            y: 150.0,
+            x: cube_left + cube_size / 3.0,
+            y:cube_top + cube_size / 3.0,
             z: 0.0,
         },
 
-        intensity: 400.0,
-
-        color: rendering::colors::RgbaColor {
-            r: 255,
-            g: 255,
-            b: 255,
-            a: 100,
-        },
+        decay: 0.005,
     };
 
     // unsafe is needed because CAMERA_POS is static
