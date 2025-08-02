@@ -1,14 +1,12 @@
-use crate::{objects, rendering};
+use crate::{objects, positioning, rendering};
 
 pub struct LightSource {
-    pub x: u32,
-    pub y: u32,
-    pub z: u32,
+    pub pos: positioning::coordinates::Coordinates,
 
     // Intensity describes the "half life" of the color.
     // E.g. An intensity of 100 means that after 100 pixels, the light source
     // will be half as bright.
-    pub intensity: u32,
+    pub intensity: f64,
 
     pub color: rendering::colors::RgbaColor,
 }

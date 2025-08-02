@@ -1,8 +1,11 @@
-use crate::{objects::{self, drawable::Drawable}, rendering};
+use crate::{
+    objects::{self, drawable::Drawable},
+    positioning, rendering,
+};
 
 pub fn new_scene() -> Scene {
     let camera = objects::camera::Camera {
-        pos: rendering::coordinates::Coordinates{
+        pos: positioning::coordinates::Coordinates {
             x: 0.0,
             y: 0.0,
             z: 0.0,
@@ -12,7 +15,10 @@ pub fn new_scene() -> Scene {
         roll: 0.0,
     };
 
-   Scene { objects: vec![], camera }
+    Scene {
+        objects: vec![],
+        camera,
+    }
 }
 
 pub struct Scene {
@@ -35,7 +41,7 @@ impl Scene {
             },
         );
 
-        for object in self.objects  {
+        for object in self.objects {
             image = object.draw(&image, &self.camera);
         }
 
@@ -48,7 +54,7 @@ impl Scene {
         self
     }
 
-    pub fn move_camera(mut self, pos: rendering::coordinates::Coordinates) -> Self {
+    pub fn move_camera(mut self, pos: positioning::coordinates::Coordinates) -> Self {
         self.camera.pos = pos;
         self
     }

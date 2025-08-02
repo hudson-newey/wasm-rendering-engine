@@ -1,14 +1,14 @@
 use crate::{
-    objects,
-    rendering::{self, colors, image::ImageData, pixel},
+    objects, positioning,
+    rendering::{colors, image::ImageData},
 };
 
 pub struct Cube {
-    pub pos: rendering::coordinates::Coordinates,
+    pub pos: positioning::coordinates::Coordinates,
 
-    pub width: pixel::PixelOffset,
-    pub height: pixel::PixelOffset,
-    pub depth: pixel::PixelOffset,
+    pub width: f64,
+    pub height: f64,
+    pub depth: f64,
 
     pub color: colors::RgbaColor,
 }
@@ -20,7 +20,7 @@ impl objects::drawable::Drawable for Cube {
         let top_pos = self.pos.y + z_distance + camera.pos.y;
         let bottom_pos = self.pos.y + (self.height as f64) - z_distance + camera.pos.y;
 
-        let left_pos= self.pos.x + z_distance - camera.pos.x;
+        let left_pos = self.pos.x + z_distance - camera.pos.x;
         let right_pos = self.pos.x + (self.width as f64) - z_distance - camera.pos.x;
 
         image.for_each_pixel(

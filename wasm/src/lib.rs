@@ -4,8 +4,9 @@ mod animations;
 mod objects;
 mod rendering;
 mod scenes;
+mod positioning;
 
-static mut CAMERA_POS: rendering::coordinates::Coordinates = rendering::coordinates::Coordinates {
+static mut CAMERA_POS: positioning::coordinates::Coordinates = positioning::coordinates::Coordinates {
     x: 0.0,
     y: 0.0,
     z: 0.0,
@@ -15,7 +16,7 @@ const CAMERA_SENSITIVITY: f64 = 10.0;
 
 #[allow(static_mut_refs)]
 #[wasm_bindgen]
-pub fn next_frame(
+pub fn generate_frame(
     width: rendering::pixel::PixelOffset,
     height: rendering::pixel::PixelOffset,
 ) -> Vec<rendering::image::RawValue> {
@@ -29,15 +30,15 @@ pub fn next_frame(
     let cube_top = midpoint_top - (cube_size / 2.0);
 
     let cube = objects::cube::Cube {
-        pos: rendering::coordinates::Coordinates {
+        pos: positioning::coordinates::Coordinates {
             x: cube_left,
             y: cube_top,
             z: 0.0,
         },
 
-        width: cube_size as u32,
-        height: cube_size as u32,
-        depth: cube_size as u32,
+        width: cube_size,
+        height: cube_size,
+        depth: cube_size,
 
         color: rendering::colors::RgbaColor {
             r: 30,
@@ -48,11 +49,13 @@ pub fn next_frame(
     };
 
     let light = objects::light_source::LightSource {
-        x: 300,
-        y: 150,
-        z: 0,
+        pos: positioning::coordinates::Coordinates {
+            x: 300.0,
+            y: 150.0,
+            z: 0.0,
+        },
 
-        intensity: 400,
+        intensity: 400.0,
 
         color: rendering::colors::RgbaColor {
             r: 255,

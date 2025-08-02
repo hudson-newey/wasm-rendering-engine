@@ -1,4 +1,12 @@
-import initWasm, { camera_backwards, camera_down, camera_forwards, camera_left, camera_right, camera_up, next_frame } from "../build/wasm";
+import initWasm, {
+  camera_backwards,
+  camera_down,
+  camera_forwards,
+  camera_left,
+  camera_right,
+  camera_up,
+  generate_frame,
+} from "../build/wasm";
 
 export const CAMERA_FORWARDS = "forwards";
 export const CAMERA_BACKWARDS = "backwards";
@@ -29,7 +37,7 @@ class CubePainter {
   }
 
   private paintNext() {
-    const newData = next_frame(this.width, this.height);
+    const newData = generate_frame(this.width, this.height);
 
     const imageData = new ImageData(
       new Uint8ClampedArray(newData),
