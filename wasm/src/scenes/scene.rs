@@ -2,12 +2,14 @@ use crate::{objects::{self, drawable::Drawable}, rendering};
 
 pub fn new_scene() -> Scene {
     let camera = objects::camera::Camera {
-        x: 0,
-        y: 300,
-        z: 0,
-        pitch: 135,
-        yaw: 0,
-        roll: 0,
+        pos: rendering::coordinates::Coordinates{
+            x: 0.0,
+            y: 0.0,
+            z: 100.0,
+        },
+        pitch: 0.0,
+        yaw: 0.0,
+        roll: 0.0,
     };
 
    Scene { objects: vec![], camera }

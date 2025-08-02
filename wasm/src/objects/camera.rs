@@ -1,9 +1,9 @@
-pub struct Camera {
-    pub x: u32,
-    pub y: u32,
-    pub z: u32,
+use crate::rendering;
 
-    pub pitch: u16,
-    pub yaw: u16,
-    pub roll: u16,
+pub struct Camera {
+    pub pos: rendering::coordinates::Coordinates,
+
+    pub pitch: f64,
+    pub yaw: f64,
+    pub roll: f64,
 }

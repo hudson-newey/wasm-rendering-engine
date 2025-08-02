@@ -18,12 +18,6 @@ class CubePainter {
   }
 
   public async start() {
-    const canvasPixelCount = this.canvas.width * this.canvas.height;
-    const canvasChannels = 4; // r, g, b, a
-    const bufferSize = canvasPixelCount * canvasChannels;
-
-    const initialBuffer = new Uint8Array(bufferSize);
-
     this.paintNext();
   }
 
@@ -40,7 +34,7 @@ class CubePainter {
     // Only request the next frame after the current frame has completed.
     // This means that if the computer is slow, the animation will prefer
     // to run slowly rather than drop frames.
-    // requestAnimationFrame(() => this.paintNext());
+    requestAnimationFrame(() => this.paintNext());
   }
 }
 
