@@ -59,7 +59,7 @@ pub fn generate_frame(
             b: 30,
             a: 255,
         },
-        line_width: 2,
+        line_width: 3,
     };
 
     let light = objects::light_source::LightSource {

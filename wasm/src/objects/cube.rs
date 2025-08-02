@@ -41,10 +41,10 @@ impl objects::drawable::Drawable for Cube {
                 return front_face || top_face;
             },
             |pixel| {
-                let is_edge = pixel.y as f64 <= top_pos + self.line_width as f64
-                    || pixel.y as f64 >= bottom_pos - self.line_width as f64
-                    || pixel.x as f64 <= left_pos + self.line_width as f64
-                    || pixel.x as f64 >= right_pos - self.line_width as f64;
+                let is_edge = (pixel.y as f64) < top_pos + (self.line_width as f64)
+                    || (pixel.y as f64) > bottom_pos - self.line_width as f64
+                    || (pixel.x as f64) < left_pos + self.line_width as f64
+                    || (pixel.x as f64) > right_pos - self.line_width as f64;
 
                 if is_edge {
                     self.line_color.clone()
