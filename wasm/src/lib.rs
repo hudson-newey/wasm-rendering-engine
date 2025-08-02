@@ -6,10 +6,15 @@ mod rendering;
 mod scenes;
 mod positioning;
 
-static mut CAMERA_POS: positioning::coordinates::Coordinates = positioning::coordinates::Coordinates {
-    x: 0.0,
-    y: 0.0,
-    z: 0.0,
+static mut CAMERA: objects::camera::Camera = objects::camera::Camera {
+    pos: positioning::coordinates::Coordinates {
+        x: 0.0,
+        y: -100.0,
+        z: 0.0,
+    },
+    pitch: 45.0,
+    yaw: 0.0,
+    roll: 0.0,
 };
 
 const CAMERA_SENSITIVITY: f64 = 10.0;
@@ -70,50 +75,98 @@ pub fn generate_frame(
         let scene = scenes::scene::new_scene()
             .add_object(cube)
             .add_object(light)
-            .move_camera(CAMERA_POS.clone());
+            .move_camera(CAMERA.clone());
 
         scene.generate(&canvas).data
     }
 }
 
 #[wasm_bindgen]
-pub fn camera_backwards() {
+pub fn camera_backwards(value: Option<f64>) {
     unsafe {
-        CAMERA_POS.z -= CAMERA_SENSITIVITY;
+        CAMERA.pos.z -= value.unwrap_or(CAMERA_SENSITIVITY);
     }
 }
 
 #[wasm_bindgen]
-pub fn camera_forwards() {
+pub fn camera_forwards(value: Option<f64>) {
     unsafe {
-        CAMERA_POS.z += CAMERA_SENSITIVITY;
+        CAMERA.pos.z += value.unwrap_or(CAMERA_SENSITIVITY);
     }
 }
 
 #[wasm_bindgen]
-pub fn camera_left() {
+pub fn camera_left(value: Option<f64>) {
     unsafe {
-        CAMERA_POS.x -= CAMERA_SENSITIVITY;
+        CAMERA.pos.x -= value.unwrap_or(CAMERA_SENSITIVITY);
     }
 }
 
 #[wasm_bindgen]
-pub fn camera_right() {
+pub fn camera_right(value: Option<f64>) {
     unsafe {
-        CAMERA_POS.x += CAMERA_SENSITIVITY;
+        CAMERA.pos.x += value.unwrap_or(CAMERA_SENSITIVITY);
     }
 }
 
 #[wasm_bindgen]
-pub fn camera_up() {
+pub fn camera_up(value: Option<f64>) {
     unsafe {
-        CAMERA_POS.y -= CAMERA_SENSITIVITY;
+        CAMERA.pos.y -= value.unwrap_or(CAMERA_SENSITIVITY);
     }
 }
 
 #[wasm_bindgen]
-pub fn camera_down() {
+pub fn camera_down(value: Option<f64>) {
     unsafe {
-        CAMERA_POS.y += CAMERA_SENSITIVITY;
+        CAMERA.pos.y += value.unwrap_or(CAMERA_SENSITIVITY);
+    }
+}
+
+#[allow(static_mut_refs)]
+#[wasm_bindgen]
+pub fn camera_rotate_left(value: Option<f64>) {
+    unsafe {
+        CAMERA.set_yaw(CAMERA.yaw - value.unwrap_or(CAMERA_SENSITIVITY));
+    }
+}
+
+#[allow(static_mut_refs)]
+#[wasm_bindgen]
+pub fn camera_rotate_right(value: Option<f64>) {
+    unsafe {
+        CAMERA.set_yaw(CAMERA.yaw + value.unwrap_or(CAMERA_SENSITIVITY));
+    }
+}
+
+#[allow(static_mut_refs)]
+#[wasm_bindgen]
+pub fn camera_rotate_up(value: Option<f64>) {
+    unsafe {
+        CAMERA.set_pitch(CAMERA.pitch - value.unwrap_or(CAMERA_SENSITIVITY));
+    }
+}
+
+#[allow(static_mut_refs)]
+#[wasm_bindgen]
+pub fn camera_rotate_down(value: Option<f64>) {
+    unsafe {
+        CAMERA.set_pitch(CAMERA.pitch + value.unwrap_or(CAMERA_SENSITIVITY));
+    }
+}
+
+#[allow(static_mut_refs)]
+#[wasm_bindgen]
+pub fn camera_rotate_anticlockwise(value: Option<f64>) {
+    unsafe {
+        CAMERA.set_pitch(CAMERA.roll - value.unwrap_or(CAMERA_SENSITIVITY));
+    }
+}
+
+#[allow(static_mut_refs)]
+#[wasm_bindgen]
+pub fn camera_rotate_clockwise(value: Option<f64>) {
+    unsafe {
+        CAMERA.set_pitch(CAMERA.roll + value.unwrap_or(CAMERA_SENSITIVITY));
     }
 }

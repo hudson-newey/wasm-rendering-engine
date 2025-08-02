@@ -54,8 +54,8 @@ impl Scene {
         self
     }
 
-    pub fn move_camera(mut self, pos: positioning::coordinates::Coordinates) -> Self {
-        self.camera.pos = pos;
+    pub fn move_camera(mut self, new_camera: objects::camera::Camera) -> Self {
+        self.camera = new_camera;
         self
     }
 }
