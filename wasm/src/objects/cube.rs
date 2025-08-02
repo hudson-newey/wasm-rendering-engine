@@ -5,6 +5,7 @@ use crate::{
 
 pub struct Cube {
     pub pos: positioning::coordinates::Coordinates,
+    pub facing: positioning::facing::Facing,
 
     pub width: f64,
     pub height: f64,

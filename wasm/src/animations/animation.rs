@@ -1,3 +1,3 @@
 pub struct Animation {
-    duration: u32,
+    pub duration: u32,
 }

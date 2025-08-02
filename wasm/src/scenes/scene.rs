@@ -10,9 +10,7 @@ pub fn new_scene() -> Scene {
             y: 0.0,
             z: 0.0,
         },
-        pitch: 0.0,
-        yaw: 0.0,
-        roll: 0.0,
+        facing: positioning::facing::ZEROED_FACING,
     };
 
     Scene {

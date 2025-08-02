@@ -1,5 +1,7 @@
 use wasm_bindgen::prelude::*;
 
+use crate::positioning::facing::ZEROED_FACING;
+
 mod animations;
 mod objects;
 mod rendering;
@@ -12,9 +14,7 @@ static mut CAMERA: objects::camera::Camera = objects::camera::Camera {
         y: -100.0,
         z: 0.0,
     },
-    pitch: 45.0,
-    yaw: 0.0,
-    roll: 0.0,
+    facing: ZEROED_FACING,
 };
 
 const CAMERA_SENSITIVITY: f64 = 10.0;
@@ -40,6 +40,7 @@ pub fn generate_frame(
             y: cube_top,
             z: 0.0,
         },
+        facing: positioning::facing::ZEROED_FACING,
 
         width: cube_size,
         height: cube_size,
@@ -127,7 +128,7 @@ pub fn camera_down(value: Option<f64>) {
 #[wasm_bindgen]
 pub fn camera_rotate_left(value: Option<f64>) {
     unsafe {
-        CAMERA.set_yaw(CAMERA.yaw - value.unwrap_or(CAMERA_SENSITIVITY));
+        CAMERA.facing.add_yaw(-value.unwrap_or(CAMERA_SENSITIVITY));
     }
 }
 
@@ -135,7 +136,7 @@ pub fn camera_rotate_left(value: Option<f64>) {
 #[wasm_bindgen]
 pub fn camera_rotate_right(value: Option<f64>) {
     unsafe {
-        CAMERA.set_yaw(CAMERA.yaw + value.unwrap_or(CAMERA_SENSITIVITY));
+        CAMERA.facing.add_yaw(value.unwrap_or(CAMERA_SENSITIVITY));
     }
 }
 
@@ -143,7 +144,7 @@ pub fn camera_rotate_right(value: Option<f64>) {
 #[wasm_bindgen]
 pub fn camera_rotate_up(value: Option<f64>) {
     unsafe {
-        CAMERA.set_pitch(CAMERA.pitch - value.unwrap_or(CAMERA_SENSITIVITY));
+        CAMERA.facing.add_pitch(-value.unwrap_or(CAMERA_SENSITIVITY));
     }
 }
 
@@ -151,7 +152,7 @@ pub fn camera_rotate_up(value: Option<f64>) {
 #[wasm_bindgen]
 pub fn camera_rotate_down(value: Option<f64>) {
     unsafe {
-        CAMERA.set_pitch(CAMERA.pitch + value.unwrap_or(CAMERA_SENSITIVITY));
+        CAMERA.facing.add_pitch(value.unwrap_or(CAMERA_SENSITIVITY));
     }
 }
 
@@ -159,7 +160,7 @@ pub fn camera_rotate_down(value: Option<f64>) {
 #[wasm_bindgen]
 pub fn camera_rotate_anticlockwise(value: Option<f64>) {
     unsafe {
-        CAMERA.set_pitch(CAMERA.roll - value.unwrap_or(CAMERA_SENSITIVITY));
+        CAMERA.facing.add_roll(-value.unwrap_or(CAMERA_SENSITIVITY));
     }
 }
 
@@ -167,6 +168,6 @@ pub fn camera_rotate_anticlockwise(value: Option<f64>) {
 #[wasm_bindgen]
 pub fn camera_rotate_clockwise(value: Option<f64>) {
     unsafe {
-        CAMERA.set_pitch(CAMERA.roll + value.unwrap_or(CAMERA_SENSITIVITY));
+        CAMERA.facing.add_roll(value.unwrap_or(CAMERA_SENSITIVITY));
     }
 }
