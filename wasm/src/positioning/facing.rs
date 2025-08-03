@@ -9,9 +9,9 @@ pub const ZEROED_FACING: Facing = Facing {
     roll: 0.0,
 };
 
-type Pitch = f64;
-type Yaw = f64;
-type Roll = f64;
+type Pitch = f32;
+type Yaw = f32;
+type Roll = f32;
 
 #[derive(Clone)]
 pub struct Facing {

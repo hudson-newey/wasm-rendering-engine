@@ -7,9 +7,9 @@ pub struct Cube<'lifetime> {
     pub pos: positioning::coordinates::Coordinates,
     pub facing: positioning::facing::Facing,
 
-    pub width: f64,
-    pub height: f64,
-    pub depth: f64,
+    pub width: f32,
+    pub height: f32,
+    pub depth: f32,
 
     pub bg_color: &'lifetime colors::RgbaColor,
 
@@ -23,28 +23,28 @@ impl objects::drawable::Drawable for Cube<'static> {
 
         let y_scale = z_distance;
         let top_pos = self.pos.y - camera.pos.y + y_scale;
-        let bottom_pos = self.pos.y + (self.height as f64) - camera.pos.y - y_scale;
+        let bottom_pos = self.pos.y + (self.height as f32) - camera.pos.y - y_scale;
 
         let x_scale = z_distance;
         let left_pos = self.pos.x - camera.pos.x + x_scale;
-        let right_pos = self.pos.x + (self.width as f64) - camera.pos.x - x_scale;
+        let right_pos = self.pos.x + (self.width as f32) - camera.pos.x - x_scale;
 
         image.for_each_pixel(
             |pixel| {
-                let front_face = (pixel.y as f64) >= top_pos
-                    && (pixel.y as f64) <= bottom_pos
-                    && (pixel.x as f64) >= left_pos
-                    && (pixel.x as f64) <= right_pos;
+                let front_face = (pixel.y as f32) >= top_pos
+                    && (pixel.y as f32) <= bottom_pos
+                    && (pixel.x as f32) >= left_pos
+                    && (pixel.x as f32) <= right_pos;
 
                 let top_face = false;
 
                 return front_face || top_face;
             },
             |pixel| {
-                let is_edge = (pixel.y as f64) < top_pos + (self.line_width as f64)
-                    || (pixel.y as f64) > bottom_pos - self.line_width as f64
-                    || (pixel.x as f64) < left_pos + self.line_width as f64
-                    || (pixel.x as f64) > right_pos - self.line_width as f64;
+                let is_edge = (pixel.y as f32) < top_pos + (self.line_width as f32)
+                    || (pixel.y as f32) > bottom_pos - self.line_width as f32
+                    || (pixel.x as f32) < left_pos + self.line_width as f32
+                    || (pixel.x as f32) > right_pos - self.line_width as f32;
 
                 if is_edge {
                     &self.line_color

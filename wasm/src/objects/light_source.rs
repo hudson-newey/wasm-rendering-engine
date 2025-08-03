@@ -1,4 +1,4 @@
-use std::f64::consts::E;
+use std::f32::consts::E;
 
 use crate::{objects, positioning, rendering};
 
@@ -8,7 +8,7 @@ pub struct LightSource {
     // Decay describes the "half life" of the color.
     // E.g. A decay of 100 means that after 100 pixels, the light source
     // will be half as bright.
-    pub decay: f64,
+    pub decay: f32,
 }
 
 impl objects::drawable::Drawable for LightSource {
@@ -21,8 +21,8 @@ impl objects::drawable::Drawable for LightSource {
         image.for_each_pixel(
             |_| true,
             |pixel| {
-                let dx = (pixel.x as f64 - self.pos.x + camera.pos.x).abs();
-                let dy = (pixel.y as f64 - self.pos.y + camera.pos.y).abs();
+                let dx = (pixel.x as f32 - self.pos.x + camera.pos.x).abs();
+                let dy = (pixel.y as f32 - self.pos.y + camera.pos.y).abs();
                 let distance = ((dx * dx) + (dy * dy)).sqrt();
 
                 // I use exponential decay for brightness to test this object.
@@ -36,7 +36,7 @@ impl objects::drawable::Drawable for LightSource {
                 if pixel_luminance < 0.01 {
                     &pixel.color
                 } else {
-                    pixel.color.lighten(pixel_luminance as f32)
+                    pixel.color.lighten(pixel_luminance)
                 }
             },
         );

@@ -11,8 +11,8 @@ pub fn generate_frame(
     let canvas = rendering::canvas::Canvas { width, height };
 
     let cube_size = 600.0;
-    let midpoint_left = width as f64 / 2.0;
-    let midpoint_top = height as f64 / 2.0;
+    let midpoint_left = width as f32 / 2.0;
+    let midpoint_top = height as f32 / 2.0;
 
     let cube_left = midpoint_left - (cube_size / 2.0);
     let cube_top = midpoint_top - (cube_size / 2.0);
