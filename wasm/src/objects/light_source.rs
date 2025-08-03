@@ -12,17 +12,19 @@ pub struct LightSource {
 }
 
 impl objects::drawable::Drawable for LightSource {
-    fn draw(
+    fn draw<'a>(
         self: &Self,
         image: &mut rendering::image::ImageData,
         camera: &objects::camera::Camera,
     ) {
+        const LUMINANCE_MINIMUM: f32 = 0.01;
+        let x_offset = self.pos.x + camera.pos.x;
+        let y_offset = self.pos.y + camera.pos.y;
 
         image.for_each_pixel(
-            |_| true,
             |pixel| {
-                let dx = (pixel.x as f32 - self.pos.x + camera.pos.x).abs();
-                let dy = (pixel.y as f32 - self.pos.y + camera.pos.y).abs();
+                let dx = (pixel.x as f32 - x_offset).abs();
+                let dy = (pixel.y as f32 - y_offset).abs();
                 let distance = ((dx * dx) + (dy * dy)).sqrt();
 
                 // I use exponential decay for brightness to test this object.
@@ -33,11 +35,13 @@ impl objects::drawable::Drawable for LightSource {
                 // If the lightness amount gets less than 0.01, we say that the lighting
                 // amount is "negligible".
                 // At this point, we do not apply any transformations.
-                if pixel_luminance < 0.01 {
-                    &pixel.color
-                } else {
-                    pixel.color.lighten(pixel_luminance)
-                }
+                let activate = pixel_luminance > LUMINANCE_MINIMUM;
+                let passthrough_data = pixel_luminance;
+
+                (activate, passthrough_data)
+            },
+            |pixel, passthrough| {
+                pixel.color.lighten(passthrough)
             },
         );
     }

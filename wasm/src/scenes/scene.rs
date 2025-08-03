@@ -30,8 +30,8 @@ impl Scene {
 
         // before rendering anything, we want to black out the entire canvas
         image.for_each_pixel(
-            |_| true,
-            |_| &rendering::colors::RgbaColor {
+            |_| (true, false),
+            |_,_| &rendering::colors::RgbaColor {
                 r: 0,
                 g: 0,
                 b: 0,

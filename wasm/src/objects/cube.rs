@@ -38,9 +38,9 @@ impl objects::drawable::Drawable for Cube<'static> {
 
                 let top_face = false;
 
-                return front_face || top_face;
+                return (front_face || top_face, false);
             },
-            |pixel| {
+            |pixel, _| {
                 let is_edge = (pixel.y as f32) < top_pos + (self.line_width as f32)
                     || (pixel.y as f32) > bottom_pos - self.line_width as f32
                     || (pixel.x as f32) < left_pos + self.line_width as f32

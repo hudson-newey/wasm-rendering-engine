@@ -1,3 +1,5 @@
+use std::thread;
+
 use crate::rendering::{self, colors};
 
 // A single pixel value.
@@ -19,17 +21,24 @@ pub struct ImageData {
 }
 
 impl ImageData {
-    // A really slow helper to conditionally apply a function to every pixel.
-    pub fn for_each_pixel<When, Action>(&mut self, when: When, action: Action)
-    where
-        When: Fn(&rendering::pixel::Pixel) -> bool,
-        Action: Fn(&mut rendering::pixel::Pixel) -> &colors::RgbaColor,
+    pub fn for_each_pixel<'passthrough, When, Action, DataPassthrough>(
+        &mut self,
+        when: When,
+        action: Action,
+    ) where
+        When: Fn(&rendering::pixel::Pixel) -> (bool, DataPassthrough),
+        Action: Fn(&mut rendering::pixel::Pixel, DataPassthrough) -> &colors::RgbaColor,
     {
-        for (index, raw_data) in self.data.chunks_mut(4).enumerate() {
+        let thread_count = 1;
+
+        // This method uses loop tiling optimizations to improve L1 cache hits.
+        // https://en.wikipedia.org/wiki/Loop_nest_optimization
+        for (index, raw_data) in self.data.chunks_mut(thread_count * 4).enumerate() {
             let mut pixel = data_index_to_pixel(index, self.canvas.width, &raw_data);
 
-            if when(&pixel) {
-                let color = action(&mut pixel);
+            let (activate, data_passthrough) = when(&pixel);
+            if activate {
+                let color = action(&mut pixel, data_passthrough);
                 let mut color_data = color.to_image_data();
 
                 raw_data.swap_with_slice(&mut color_data);
@@ -39,11 +48,15 @@ impl ImageData {
 
     pub fn set_pixel(&mut self, x: u32, y: u32, color: colors::RgbaColor) {
         let index = ((y * self.canvas.width) + x) as usize;
-        self.data[index..index+3].copy_from_slice(&color.to_image_data());
+        self.data[index..index + 3].copy_from_slice(&color.to_image_data());
     }
 }
 
-fn data_index_to_pixel(offset: usize, canvas_width: u32, raw_data: &[u8]) -> rendering::pixel::Pixel {
+fn data_index_to_pixel(
+    offset: usize,
+    canvas_width: u32,
+    raw_data: &[u8],
+) -> rendering::pixel::Pixel {
     let x = offset as u32 % canvas_width;
     let y = offset as u32 / canvas_width;
     let color = image_data_to_rgba(raw_data);
