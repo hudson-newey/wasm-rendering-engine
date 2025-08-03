@@ -20,8 +20,8 @@ impl objects::drawable::Drawable for LightSource {
         image.for_each_pixel(
             |_| true,
             |pixel| {
-                let dx = (pixel.x as f64 - self.pos.x).abs();
-                let dy = (pixel.y as f64 - self.pos.y).abs();
+                let dx = (pixel.x as f64 - self.pos.x + camera.pos.x).abs();
+                let dy = (pixel.y as f64 - self.pos.y + camera.pos.y).abs();
                 let distance = ((dx * dx) + (dy * dy)).sqrt();
 
                 // I use exponential decay for brightness to test this object.
