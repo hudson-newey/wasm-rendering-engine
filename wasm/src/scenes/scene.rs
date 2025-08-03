@@ -28,17 +28,6 @@ impl Scene<'static> {
     pub fn generate(self, canvas: &rendering::canvas::Canvas) -> rendering::image::ImageData {
         let mut image = rendering::image::from_canvas(canvas.clone());
 
-        // before rendering anything, we want to black out the entire canvas
-        image.for_each_pixel(
-            |_| (true, false),
-            |_,_| &rendering::colors::RgbaColor {
-                r: 0,
-                g: 0,
-                b: 0,
-                a: 255,
-            },
-        );
-
         for object in self.objects {
             object.draw(&mut image, &self.camera);
         }

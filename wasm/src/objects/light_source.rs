@@ -1,5 +1,3 @@
-use std::f32::consts::E;
-
 use crate::{objects, positioning, rendering};
 
 pub struct LightSource {
@@ -27,10 +25,10 @@ impl objects::drawable::Drawable for LightSource {
                 let dy = (pixel.y as f32 - y_offset).abs();
                 let distance = ((dx * dx) + (dy * dy)).sqrt();
 
-                // I use exponential decay for brightness to test this object.
-                // However, we should make it so that this only collides with
-                // other objects.
-                let pixel_luminance = E.powf(-self.decay * distance);
+                // Note that this luminance function is extremely simple because
+                // floating point powers are extremely slow.
+                // let pixel_luminance = (-self.decay * distance).exp();
+                let pixel_luminance = 1.0 - (self.decay * distance);
 
                 // If the lightness amount gets less than 0.01, we say that the lighting
                 // amount is "negligible".
@@ -40,9 +38,7 @@ impl objects::drawable::Drawable for LightSource {
 
                 (activate, passthrough_data)
             },
-            |pixel, passthrough| {
-                pixel.color.lighten(passthrough)
-            },
+            |pixel, passthrough| pixel.color.lighten(passthrough),
         );
     }
 }
