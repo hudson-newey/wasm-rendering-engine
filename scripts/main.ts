@@ -1,3 +1,4 @@
+import { Keybindings, KeyboardListener } from "./keyboard";
 import {
   CAMERA_BACKWARDS,
   CAMERA_DOWN,
@@ -18,39 +19,13 @@ const offscreenCanvas = outputCanvas.transferControlToOffscreen();
 const painter = new PaintWorker();
 painter.postMessage(offscreenCanvas, [offscreenCanvas]);
 
-document.addEventListener("keydown", (event: KeyboardEvent) => {
-  switch (event.key.toLowerCase()) {
-    case "w": {
-      painter.postMessage(CAMERA_FORWARDS);
-      break;
-    }
+const shortcuts: Keybindings = new Map([
+  ["w", () => painter.postMessage(CAMERA_FORWARDS)],
+  ["s", () => painter.postMessage(CAMERA_BACKWARDS)],
+  ["a", () => painter.postMessage(CAMERA_LEFT)],
+  ["d", () => painter.postMessage(CAMERA_RIGHT)],
+  [" ", () => painter.postMessage(CAMERA_UP)],
+  ["shift", () => painter.postMessage(CAMERA_DOWN)],
+]);
 
-    case "s": {
-      painter.postMessage(CAMERA_BACKWARDS);
-      break;
-    }
-
-    case "a": {
-      painter.postMessage(CAMERA_LEFT);
-      break;
-    }
-
-    case "d": {
-      console.debug("right");
-      painter.postMessage(CAMERA_RIGHT);
-      break;
-    }
-
-    case " ": {
-      event.preventDefault();
-      painter.postMessage(CAMERA_UP);
-      break;
-    }
-
-    case "z": {
-      event.preventDefault();
-      painter.postMessage(CAMERA_DOWN);
-      break;
-    }
-  }
-});
+new KeyboardListener(shortcuts);

@@ -73,7 +73,6 @@ onmessage = async (event: any) => {
       }
 
       case CAMERA_RIGHT: {
-        console.debug("right");
         camera_right();
         break;
       }

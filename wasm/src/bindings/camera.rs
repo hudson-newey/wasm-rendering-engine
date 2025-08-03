@@ -11,7 +11,7 @@ pub static mut CAMERA: objects::camera::Camera = objects::camera::Camera {
     facing: ZEROED_FACING,
 };
 
-const CAMERA_SENSITIVITY: f32 = 10.0;
+const CAMERA_SENSITIVITY: f32 = 3.0;
 
 #[wasm_bindgen]
 pub fn camera_backwards(value: Option<f32>) {
