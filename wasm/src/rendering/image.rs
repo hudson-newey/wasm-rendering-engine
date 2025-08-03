@@ -1,5 +1,4 @@
-use std::thread;
-
+use rayon::prelude::*;
 use crate::rendering::{self, colors};
 
 // A single pixel value.
@@ -26,24 +25,25 @@ impl ImageData {
         when: When,
         action: Action,
     ) where
-        When: Fn(&rendering::pixel::Pixel) -> (bool, DataPassthrough),
-        Action: Fn(&mut rendering::pixel::Pixel, DataPassthrough) -> &colors::RgbaColor,
+        When: Fn(&rendering::pixel::Pixel) -> (bool, DataPassthrough) + Sync + Send,
+        Action: Fn(&mut rendering::pixel::Pixel, DataPassthrough) -> &colors::RgbaColor + Sync + Send,
     {
-        let thread_count = 1;
+        const PIXEL_BYTE_SIZE: usize = 4;
 
-        // This method uses loop tiling optimizations to improve L1 cache hits.
-        // https://en.wikipedia.org/wiki/Loop_nest_optimization
-        for (index, raw_data) in self.data.chunks_mut(thread_count * 4).enumerate() {
-            let mut pixel = data_index_to_pixel(index, self.canvas.width, &raw_data);
+        self.data
+            .par_chunks_mut(PIXEL_BYTE_SIZE)
+            .enumerate()
+            .for_each(|(index, raw_data)| {
+                let mut pixel = data_index_to_pixel(index, self.canvas.width, &raw_data);
 
-            let (activate, data_passthrough) = when(&pixel);
-            if activate {
-                let color = action(&mut pixel, data_passthrough);
-                let mut color_data = color.to_image_data();
+                let (activate, data_passthrough) = when(&pixel);
+                if activate {
+                    let color = action(&mut pixel, data_passthrough);
+                    let mut color_data = color.to_image_data();
 
-                raw_data.swap_with_slice(&mut color_data);
-            }
-        }
+                    raw_data.swap_with_slice(&mut color_data);
+                }
+            });
     }
 
     pub fn set_pixel(&mut self, x: u32, y: u32, color: colors::RgbaColor) {
