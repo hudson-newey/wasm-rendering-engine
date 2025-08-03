@@ -3,28 +3,28 @@ use crate::{
     positioning, rendering,
 };
 
-pub fn new_scene() -> Scene {
-    let camera = objects::camera::Camera {
+pub fn new_scene() -> Scene<'static> {
+    let camera = Box::new(&objects::camera::Camera {
         pos: positioning::coordinates::Coordinates {
             x: 0.0,
             y: 0.0,
             z: 0.0,
         },
         facing: positioning::facing::ZEROED_FACING,
-    };
+    });
 
     Scene {
         objects: vec![],
-        camera,
+        camera: camera,
     }
 }
 
-pub struct Scene {
-    camera: objects::camera::Camera,
+pub struct Scene<'lifetime> {
+    camera: Box<&'lifetime objects::camera::Camera>,
     objects: Vec<Box<dyn objects::drawable::Drawable>>,
 }
 
-impl Scene {
+impl Scene<'static> {
     pub fn generate(self, canvas: &rendering::canvas::Canvas) -> rendering::image::ImageData {
         let mut image = rendering::image::from_canvas(canvas.clone());
 
@@ -52,8 +52,8 @@ impl Scene {
         self
     }
 
-    pub fn move_camera(mut self, new_camera: objects::camera::Camera) -> Self {
-        self.camera = new_camera;
+    pub fn move_camera(mut self, new_camera: &'static objects::camera::Camera) -> Self {
+        self.camera = Box::new(new_camera);
         self
     }
 }

@@ -55,12 +55,12 @@ pub fn generate_frame(
         decay: 0.005,
     };
 
-    // unsafe is needed because CAMERA_POS is static
+    // unsafe is needed because CAMERA is static
     unsafe {
         let scene = scenes::scene::new_scene()
             .add_object(cube)
             .add_object(light)
-            .move_camera(camera::CAMERA.clone());
+            .move_camera(&camera::CAMERA);
 
         scene.generate(&canvas).data
     }
