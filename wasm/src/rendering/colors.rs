@@ -1,3 +1,6 @@
+use std::simd::num::{SimdFloat, SimdUint};
+use std::simd::{f32x4, u8x4};
+
 use crate::rendering;
 
 type IntensityRed = u8;
@@ -26,15 +29,23 @@ impl RgbaColor {
     // every time and can directly pass the result of their lim->0 function
     // into this method.
     pub fn lighten(&self, amount: f32) -> Self {
-        let r = (self.r as f32) * (1.0 + amount);
-        let g = (self.g as f32) * (1.0 + amount);
-        let b = (self.b as f32) * (1.0 + amount);
+        let multiplier = f32x4::splat(1.0 + amount);
+
+        let rgb = u8x4::from_array([self.r, self.g, self.b, 0]);
+        let rgb_f32 = rgb.cast::<f32>();
+        let result = rgb_f32 * multiplier;
+
+        let clamped = result
+            .simd_max(f32x4::splat(0.0))
+            .simd_min(f32x4::splat(255.0));
+
+        let final_rgb = clamped.cast::<u8>();
 
         RgbaColor {
-            r: r.clamp(0.0, 255.0) as u8,
-            g: g.clamp(0.0, 255.0) as u8,
-            b: b.clamp(0.0, 255.0) as u8,
-            a: self.a,
+            r: final_rgb[0],
+            g: final_rgb[1],
+            b: final_rgb[2],
+            a: self.a, // Alpha remains unchanged
         }
     }
 }

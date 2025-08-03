@@ -1,3 +1,4 @@
+#![feature(portable_simd)]
 mod bindings;
 
 mod animations;

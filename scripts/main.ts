@@ -19,35 +19,35 @@ const painter = new PaintWorker();
 painter.postMessage(offscreenCanvas, [offscreenCanvas]);
 
 document.addEventListener("keydown", (event: KeyboardEvent) => {
-  switch (event.key) {
-    case "ArrowUp": {
+  switch (event.key.toLowerCase()) {
+    case "w": {
       painter.postMessage(CAMERA_FORWARDS);
       break;
     }
 
-    case "ArrowDown": {
+    case "s": {
       painter.postMessage(CAMERA_BACKWARDS);
       break;
     }
 
-    case "ArrowLeft": {
+    case "a": {
       painter.postMessage(CAMERA_LEFT);
       break;
     }
 
-    case "ArrowRight": {
+    case "d": {
       console.debug("right");
       painter.postMessage(CAMERA_RIGHT);
       break;
     }
 
-    case "PageUp": {
+    case " ": {
       event.preventDefault();
       painter.postMessage(CAMERA_UP);
       break;
     }
 
-    case "PageDown": {
+    case "z": {
       event.preventDefault();
       painter.postMessage(CAMERA_DOWN);
       break;
