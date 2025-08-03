@@ -3,7 +3,7 @@ use crate::{
     rendering::{colors, image::ImageData, pixel::PixelOffset},
 };
 
-pub struct Cube {
+pub struct Cube<'lifetime> {
     pub pos: positioning::coordinates::Coordinates,
     pub facing: positioning::facing::Facing,
 
@@ -11,13 +11,13 @@ pub struct Cube {
     pub height: f64,
     pub depth: f64,
 
-    pub bg_color: colors::RgbaColor,
+    pub bg_color: &'lifetime colors::RgbaColor,
 
-    pub line_color: colors::RgbaColor,
+    pub line_color: &'lifetime colors::RgbaColor,
     pub line_width: PixelOffset,
 }
 
-impl objects::drawable::Drawable for Cube {
+impl objects::drawable::Drawable for Cube<'static> {
     fn draw(&self, image: &mut ImageData, camera: &objects::camera::Camera) {
         let z_distance = self.pos.z - camera.pos.z;
 
@@ -47,9 +47,9 @@ impl objects::drawable::Drawable for Cube {
                     || (pixel.x as f64) > right_pos - self.line_width as f64;
 
                 if is_edge {
-                    self.line_color.clone()
+                    &self.line_color
                 } else {
-                    self.bg_color.clone()
+                    &self.bg_color
                 }
             },
         );

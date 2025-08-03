@@ -17,6 +17,7 @@ impl objects::drawable::Drawable for LightSource {
         image: &mut rendering::image::ImageData,
         camera: &objects::camera::Camera,
     ) {
+
         image.for_each_pixel(
             |_| true,
             |pixel| {
@@ -27,9 +28,16 @@ impl objects::drawable::Drawable for LightSource {
                 // I use exponential decay for brightness to test this object.
                 // However, we should make it so that this only collides with
                 // other objects.
-                let pixel_luminance = 1.0 * E.powf(-self.decay * distance);
+                let pixel_luminance = E.powf(-self.decay * distance);
 
-                pixel.color.clone().lighten(pixel_luminance as f32)
+                // If the lightness amount gets less than 0.01, we say that the lighting
+                // amount is "negligible".
+                // At this point, we do not apply any transformations.
+                if pixel_luminance < 0.01 {
+                    &pixel.color
+                } else {
+                    pixel.color.lighten(pixel_luminance as f32)
+                }
             },
         );
     }

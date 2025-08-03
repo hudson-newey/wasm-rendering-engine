@@ -23,36 +23,32 @@ impl ImageData {
     pub fn for_each_pixel<When, Action>(&mut self, when: When, action: Action)
     where
         When: Fn(&rendering::pixel::Pixel) -> bool,
-        Action: Fn(&rendering::pixel::Pixel) -> colors::RgbaColor,
+        Action: Fn(&mut rendering::pixel::Pixel) -> &colors::RgbaColor,
     {
-        let mut result: Vec<RawValue> = Vec::with_capacity(self.data.len());
-
-        for (index, raw_data) in self.data.chunks(4).enumerate() {
-            let pixel = self.data_index_to_pixel(index, raw_data);
+        for (index, raw_data) in self.data.chunks_mut(4).enumerate() {
+            let mut pixel = data_index_to_pixel(index, self.canvas.width, &raw_data);
 
             if when(&pixel) {
-                let color = action(&pixel);
-                result.extend_from_slice(&color.to_image_data());
-            } else {
-                result.extend_from_slice(raw_data);
+                let color = action(&mut pixel);
+                let mut color_data = color.to_image_data();
+
+                raw_data.swap_with_slice(&mut color_data);
             }
         }
-
-        self.data = result;
     }
 
     pub fn set_pixel(&mut self, x: u32, y: u32, color: colors::RgbaColor) {
         let index = ((y * self.canvas.width) + x) as usize;
         self.data[index..index+3].copy_from_slice(&color.to_image_data());
     }
+}
 
-    fn data_index_to_pixel(&self, offset: usize, raw_data: &[u8]) -> rendering::pixel::Pixel {
-        let x = offset as u32 % self.canvas.width;
-        let y = offset as u32 / self.canvas.width;
-        let color = image_data_to_rgba(raw_data);
+fn data_index_to_pixel(offset: usize, canvas_width: u32, raw_data: &[u8]) -> rendering::pixel::Pixel {
+    let x = offset as u32 % canvas_width;
+    let y = offset as u32 / canvas_width;
+    let color = image_data_to_rgba(raw_data);
 
-        rendering::pixel::Pixel { x, y, color }
-    }
+    rendering::pixel::Pixel { x, y, color }
 }
 
 fn image_data_to_rgba(buffer: &[u8]) -> colors::RgbaColor {

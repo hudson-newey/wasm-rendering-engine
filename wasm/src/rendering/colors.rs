@@ -28,7 +28,7 @@ impl RgbaColor {
     // I'm therefore hoping that consumers will not have to remember to add one
     // every time and can directly pass the result of their lim->0 function
     // into this method.
-    pub fn lighten(&self, amount: f32) -> Self {
+    pub fn lighten(&mut self, amount: f32) -> &Self {
         let multiplier = f32x4::splat(1.0 + amount);
 
         let rgb = u8x4::from_array([self.r, self.g, self.b, 0]);
@@ -41,11 +41,9 @@ impl RgbaColor {
 
         let final_rgb = clamped.cast::<u8>();
 
-        RgbaColor {
-            r: final_rgb[0],
-            g: final_rgb[1],
-            b: final_rgb[2],
-            a: self.a, // Alpha remains unchanged
-        }
+        self.r = final_rgb[0];
+        self.g = final_rgb[1];
+        self.b = final_rgb[2];
+        self
     }
 }
