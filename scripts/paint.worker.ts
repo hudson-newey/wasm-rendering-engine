@@ -16,12 +16,12 @@ export const CAMERA_DOWN = "down";
 export const CAMERA_UP = "up";
 
 class CubePainter {
-  private ctx: OffscreenCanvasRenderingContext2D;
+  private ctx: ImageBitmapRenderingContext;
   private readonly width: number;
   private readonly height: number;
 
   public constructor(private readonly canvas: OffscreenCanvas) {
-    const context = this.canvas.getContext("2d");
+    const context = this.canvas.getContext("bitmaprenderer");
     if (!context) {
       throw new Error("Failed to initialize offscreen rendering context");
     }
@@ -36,7 +36,8 @@ class CubePainter {
     this.paintNext();
   }
 
-  private paintNext() {
+  private async paintNext() {
+    console.time("fps");
     const newData = generate_frame(this.width, this.height);
 
     const imageData = new ImageData(
@@ -44,12 +45,15 @@ class CubePainter {
       this.width,
       this.height
     );
-    this.ctx.putImageData(imageData, 0, 0);
+
+    const image = await self.createImageBitmap(imageData);
+    this.ctx.transferFromImageBitmap(image);
 
     // Only request the next frame after the current frame has completed.
     // This means that if the computer is slow, the animation will prefer
     // to run slowly rather than drop frames.
-    requestAnimationFrame(() => this.paintNext());
+    console.timeEnd("fps");
+    requestAnimationFrame(async () => await this.paintNext());
   }
 }
 
