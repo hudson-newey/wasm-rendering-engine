@@ -4,7 +4,7 @@ use crate::{
 };
 
 pub struct Cube<'lifetime> {
-    pub pos: positioning::coordinates::Coordinates,
+    pub pos: positioning::coordinates::Cartesian,
     pub facing: positioning::facing::Facing,
 
     pub width: f32,

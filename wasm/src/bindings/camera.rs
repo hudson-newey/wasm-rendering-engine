@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 use crate::{objects, positioning::{self, facing::ZEROED_FACING}};
 
 pub static mut CAMERA: objects::camera::Camera = objects::camera::Camera {
-    pos: positioning::coordinates::Coordinates {
+    pos: positioning::coordinates::Cartesian {
         x: 0.0,
         y: -100.0,
         z: 0.0,

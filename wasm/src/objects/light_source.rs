@@ -1,7 +1,7 @@
 use crate::{objects, positioning, rendering};
 
 pub struct LightSource {
-    pub pos: positioning::coordinates::Coordinates,
+    pub pos: positioning::coordinates::Cartesian,
 
     // Decay describes the "half life" of the color.
     // E.g. A decay of 100 means that after 100 pixels, the light source

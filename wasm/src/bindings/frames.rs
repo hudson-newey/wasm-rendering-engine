@@ -18,7 +18,7 @@ pub fn generate_frame(
     let cube_top = midpoint_top - (cube_size / 2.0);
 
     let cube = objects::cube::Cube {
-        pos: positioning::coordinates::Coordinates {
+        pos: positioning::coordinates::Cartesian {
             x: cube_left,
             y: cube_top,
             z: 0.0,
@@ -46,7 +46,7 @@ pub fn generate_frame(
     };
 
     let light = objects::light_source::LightSource {
-        pos: positioning::coordinates::Coordinates {
+        pos: positioning::coordinates::Cartesian {
             x: cube_left + cube_size / 3.0,
             y:cube_top + cube_size / 3.0,
             z: 0.0,

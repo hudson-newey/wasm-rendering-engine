@@ -5,7 +5,7 @@ use crate::{
 
 pub fn new_scene() -> Scene<'static> {
     let camera = Box::new(&objects::camera::Camera {
-        pos: positioning::coordinates::Coordinates {
+        pos: positioning::coordinates::Cartesian {
             x: 0.0,
             y: 0.0,
             z: 0.0,
